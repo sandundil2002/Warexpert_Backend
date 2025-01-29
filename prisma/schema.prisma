@@ -1,0 +1,134 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "mysql"
+  url      = env("DATABASE_URL")
+}
+
+enum UserRole {
+  MANAGER
+  SUPERVISOR
+  OPERATOR
+  OTHER
+}
+
+enum Gender {
+  MALE
+  FEMALE
+  OTHER
+}
+
+model Warehouse {
+  id        String   @id @default(uuid())
+  name      String
+  location  String
+  capacity  Int
+  size      Float
+  image     String?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  // Relationships
+  staff      Staff[]
+  inventory  InventoryItem[]
+  equipment  Equipment[]
+  operations OperationsLog[]
+}
+
+model InventoryItem {
+  id        String   @id @default(uuid())
+  name      String
+  category  String
+  quantity  Int
+  status    String
+  image     String?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  // Relationships
+  warehouse   Warehouse       @relation(fields: [warehouseId], references: [id], onDelete: Cascade)
+  warehouseId String
+  customer    Customer?       @relation(fields: [customerId], references: [id], onDelete: SetNull)
+  customerId  String?
+  operations  OperationsLog[]
+}
+
+model Staff {
+  id            String   @id @default(uuid())
+  name          String
+  role          UserRole
+  shiftSchedule String
+  gender        Gender
+  email         String   @unique
+  mobile        String
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+
+  // Relationships
+  warehouse      Warehouse        @relation(fields: [warehouseId], references: [id], onDelete: Cascade)
+  warehouseId    String
+  operations     OperationsLog[]
+  equipment      Equipment[]
+  transportation Transportation[]
+}
+
+model OperationsLog {
+  id            String   @id @default(uuid())
+  operationType String
+  timestamp     DateTime @default(now())
+  incidents     String?
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+
+  // Relationships
+  staff       Staff         @relation(fields: [staffId], references: [id], onDelete: Cascade)
+  staffId     String
+  warehouse   Warehouse     @relation(fields: [warehouseId], references: [id], onDelete: Cascade)
+  warehouseId String
+  inventory   InventoryItem @relation(fields: [inventoryId], references: [id], onDelete: Cascade)
+  inventoryId String
+}
+
+model Equipment {
+  id        String   @id @default(uuid())
+  type      String
+  category  String
+  status    String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  // Relationships
+  assignedOperator Staff     @relation(fields: [operatorId], references: [id], onDelete: Cascade)
+  operatorId       String
+  warehouse        Warehouse @relation(fields: [warehouseId], references: [id], onDelete: Cascade)
+  warehouseId      String
+}
+
+model Transportation {
+  id          String   @id @default(uuid())
+  type        String
+  capacity    Float
+  numberPlate String   @unique
+  status      String
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  // Relationships
+  driver   Staff  @relation(fields: [driverId], references: [id], onDelete: Cascade)
+  driverId String
+}
+
+model Customer {
+  id        String   @id @default(uuid())
+  name      String
+  address   String
+  email     String   @unique
+  mobile    String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  // Relationships
+  inventory InventoryItem[]
+}

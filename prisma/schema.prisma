@@ -21,12 +21,12 @@ enum Gender {
 }
 
 model Warehouse {
-  id        String   @id @default(uuid())
+  id        String   @id
   name      String
   location  String
   capacity  Int
   size      Float
-  image     String?
+  image     String?  @db.LongText
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
@@ -38,12 +38,12 @@ model Warehouse {
 }
 
 model InventoryItem {
-  id        String   @id @default(uuid())
+  id        String   @id
   name      String
   category  String
   quantity  Int
   status    String
-  image     String?
+  image     String?  @db.Text
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
@@ -56,7 +56,7 @@ model InventoryItem {
 }
 
 model Staff {
-  id            String   @id @default(uuid())
+  id            String   @id
   name          String
   role          UserRole
   shiftSchedule String
@@ -75,7 +75,7 @@ model Staff {
 }
 
 model OperationsLog {
-  id            String   @id @default(uuid())
+  id            String   @id
   operationType String
   timestamp     DateTime @default(now())
   incidents     String?
@@ -92,7 +92,7 @@ model OperationsLog {
 }
 
 model Equipment {
-  id        String   @id @default(uuid())
+  id        String   @id
   type      String
   category  String
   status    String
@@ -107,7 +107,7 @@ model Equipment {
 }
 
 model Transportation {
-  id          String   @id @default(uuid())
+  id          String   @id
   type        String
   capacity    Float
   numberPlate String   @unique
@@ -121,7 +121,7 @@ model Transportation {
 }
 
 model Customer {
-  id        String   @id @default(uuid())
+  id        String   @id
   name      String
   address   String
   email     String   @unique

@@ -23,6 +23,7 @@ export async function createWarehouse(warehouse: WarehouseModel) {
                 capacity: warehouse.capacity,
                 size: warehouse.size,
                 image: warehouse.image,
+                updatedAt: new Date()
             }
         });
         console.log("Warehouse Created successfully \n", createdWarehouse);

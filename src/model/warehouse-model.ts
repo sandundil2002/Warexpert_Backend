@@ -9,9 +9,11 @@ export class WarehouseModel {
     updatedAt: Date;
 
     constructor(id: string, name: string, location: string, capacity: number, size: number, image?: string) {
+
         if (!name || !location || capacity <= 0 || size <= 0) {
             throw new Error("Invalid warehouse data");
         }
+
         this.id = id;
         this.name = name;
         this.location = location;

@@ -70,10 +70,14 @@ router.patch('/patch/:id', async (req, res) => {
     }
 });
 
+// @ts-ignore
 router.delete('/delete/:id', async(req, res) => {
     const staffId: string = req.params.id;
 
     try {
+        if (!staffId) {
+            return res.status(400).json({ message: "Staff ID is required" });
+        }
         await deleteStaff(staffId);
         res.status(204).json("Staff Member Delete Successful");
     } catch (error) {

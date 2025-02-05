@@ -48,7 +48,6 @@ router.patch('/patch/:id', upload.single('image'), async (req, res) => {
     try {
         const { id } = req.params;
         const { name, location, capacity, size, image } = req.body;
-        console.log(name, location, capacity, size)
 
         if (!id) {
             return res.status(400).json({ message: "Warehouse ID is required" });
@@ -71,10 +70,14 @@ router.patch('/patch/:id', upload.single('image'), async (req, res) => {
     }
 });
 
+// @ts-ignore
 router.delete('/delete/:id', async(req, res) => {
     const warehouseId: string = req.params.id;
 
     try {
+        if (!warehouseId) {
+            return res.status(400).json({ message: "Warehouse ID is required" });
+        }
         await deleteWarehouse(warehouseId);
         res.status(204).json("Warehouse Delete Successful");
     } catch (error) {

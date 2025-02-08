@@ -66,7 +66,7 @@ export async function deleteWarehouse(id: string) {
     }
 }
 
-export async function generateWarehouseId(): Promise<string> {
+async function generateWarehouseId(): Promise<string> {
     const count = await prisma.warehouse.count();
     const newId = count + 1;
     return `Warehouse-${newId.toString().padStart(3, '0')}`;

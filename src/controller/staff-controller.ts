@@ -72,7 +72,7 @@ export async function deleteStaff(id: string) {
     }
 }
 
-export async function generateStaffId(): Promise<string> {
+async function generateStaffId(): Promise<string> {
     const count = await prisma.staff.count();
     const newId = count + 1;
     return `Staff-${newId.toString().padStart(3, '0')}`;

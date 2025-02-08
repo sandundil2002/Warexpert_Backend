@@ -65,7 +65,7 @@ export async function deleteLog(id: string) {
     }
 }
 
-export async function generateLogId() {
+async function generateLogId() {
     const count = await prisma.operationsLog.count();
     const newId = count + 1;
     return `LOG-${newId.toString().padStart(3, '0')}`;

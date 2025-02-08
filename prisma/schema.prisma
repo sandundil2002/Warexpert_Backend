@@ -100,10 +100,10 @@ model Equipment {
   updatedAt DateTime @updatedAt
 
   // Relationships
-  assignedOperator Staff     @relation(fields: [operatorId], references: [id], onDelete: Cascade)
-  operatorId       String
-  warehouse        Warehouse @relation(fields: [warehouseId], references: [id], onDelete: Cascade)
-  warehouseId      String
+  staff       Staff     @relation(fields: [staffId], references: [id], onDelete: Cascade)
+  staffId     String
+  warehouse   Warehouse @relation(fields: [warehouseId], references: [id], onDelete: Cascade)
+  warehouseId String
 }
 
 model Transportation {

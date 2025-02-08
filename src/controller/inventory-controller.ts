@@ -72,7 +72,7 @@ export async function deleteInventoryItem(id: string) {
     }
 }
 
-export async function generateInventoryId(): Promise<string> {
+async function generateInventoryId(): Promise<string> {
     const count = await prisma.inventoryItem.count();
     const newId = count + 1;
     return `Inventory-${newId.toString().padStart(3, '0')}`;

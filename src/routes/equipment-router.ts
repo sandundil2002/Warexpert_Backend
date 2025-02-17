@@ -59,7 +59,7 @@ router.patch('/patch/:id', async (req, res) => {
 
         const updatedEquipment = await updateEquipment(equipmentId, equipment);
         if (updatedEquipment) {
-            res.status(204).json("Equipment Updated Successfully");
+            res.status(200).json(updatedEquipment);
         }
     } catch (error) {
         console.log(error);

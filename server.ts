@@ -6,6 +6,7 @@ import customerRoutes from "./src/routes/customer-routes";
 import logsRoutes from "./src/routes/logs-routes";
 import equipmentRouter from "./src/routes/equipment-router";
 import transportationRoutes from "./src/routes/transportation-routes";
+import bodyParser from 'body-parser';
 
 const app = express();
 
@@ -15,6 +16,12 @@ app.use('/',(req,res,next)=>{
     res.header('Access-Control-Allow-Headers', 'Origin, X-Requested-With, content-type');
     next();
 });
+
+app.use(bodyParser.json({ limit: '50mb' }));
+app.use(bodyParser.urlencoded({ limit: '50mb', extended: true }));
+
+app.use(express.json({ limit: '50mb' }));
+app.use(express.urlencoded({ limit: '50mb', extended: true }));
 
 app.use('/warehouse', warehouseRoutes);
 app.use('/staff', staffRoutes);

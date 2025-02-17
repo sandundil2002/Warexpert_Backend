@@ -26,8 +26,7 @@ router.get('/get', async (req, res) => {
 
 router.post('/post', upload.single('image') , async (req, res) => {
     try {
-        const { name, category, quantity, status, warehouseId, customerId } = req.body;
-        const image = req.file ? req.file.buffer.toString("base64"): undefined;
+        const { name, category, quantity, status, warehouseId, customerId, image } = req.body;
 
         const inventory = new InventoryItemModel(
             "",

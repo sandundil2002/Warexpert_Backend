@@ -76,11 +76,10 @@ model Staff {
 }
 
 model OperationsLog {
-  id            String   @id
-  operationType String
-  incidents     String?
-  createdAt     DateTime @default(now())
-  updatedAt     DateTime @updatedAt
+  id        String   @id
+  type      String
+  incidents String?
+  createdAt DateTime @default(now())
 
   // Relationships
   staff       Staff         @relation(fields: [staffId], references: [id], onDelete: Cascade)

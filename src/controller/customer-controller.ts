@@ -21,9 +21,7 @@ export async function createCustomer(customer: CustomerModel) {
                 name: customer.name,
                 email: customer.email,
                 mobile: customer.mobile,
-                address: customer.address,
-                createdAt: new Date(),
-                updatedAt: new Date()
+                address: customer.address
             }
         });
         console.log("Customer Created successfully \n", createdCustomer);
@@ -41,8 +39,7 @@ export async function updateCustomer(id: string, customer: CustomerModel) {
                 name: customer.name,
                 email: customer.email,
                 mobile: customer.mobile,
-                address: customer.address,
-                updatedAt: new Date()
+                address: customer.address
             }
         });
         console.log("Customer Updated successfully \n", updatedCustomer);

@@ -18,7 +18,7 @@ export async function createLog(log: LogsModel) {
         const createLog = await prisma.operationsLog.create({
             data: {
                 id: await generateLogId(),
-                operationType: log.operationType,
+                type: log.type,
                 incidents: log.incidents,
                 staffId: log.staffId,
                 warehouseId: log.warehouseId,
@@ -29,39 +29,6 @@ export async function createLog(log: LogsModel) {
         return createLog;
     } catch (error) {
         console.log(error)
-    }
-}
-
-export async function updateLog(id: string, log: LogsModel) {
-    try {
-        const updateLog = await prisma.operationsLog.update({
-            where: { id },
-            data: {
-                operationType: log.operationType,
-                incidents: log.incidents,
-                staffId: log.staffId,
-                warehouseId: log.warehouseId,
-                inventoryId: log.inventoryId,
-            }
-        });
-        console.log("Log Updated successfully \n", updateLog);
-        return updateLog;
-    } catch (error) {
-        console.error("Error updating log:", error);
-        throw new Error("Failed to update log");
-    }
-}
-
-export async function deleteLog(id: string) {
-    try {
-        const deleteLog = await prisma.operationsLog.delete({
-            where: { id }
-        });
-        console.log("Log Deleted successfully \n", deleteLog);
-        return deleteLog;
-    } catch (error) {
-        console.error("Error deleting log:", error);
-        throw new Error("Failed to delete log");
     }
 }
 

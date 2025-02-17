@@ -1,6 +1,6 @@
 export class LogsModel {
     id: string;
-    operationType: string;
+    type: string;
     incidents?: string;
     staffId: string;
     warehouseId: string;
@@ -8,9 +8,9 @@ export class LogsModel {
     createdAt: Date;
     updatedAt: Date;
 
-    constructor(id: string, operationType: string, staffId: string, warehouseId: string, inventoryId: string, incidents?: string) {
+    constructor(id: string, type: string, staffId: string, warehouseId: string, inventoryId: string, incidents?: string) {
         this.id = id;
-        this.operationType = operationType;
+        this.type = type;
         this.incidents = incidents;
         this.staffId = staffId;
         this.warehouseId = warehouseId;

@@ -56,7 +56,7 @@ router.patch('/patch/:id', async (req, res) => {
         );
 
         const updatedCustomer = await updateCustomer(id, customerModel);
-        res.status(204).json(updatedCustomer);
+        res.status(200).json(updatedCustomer);
     } catch (error) {
         console.log("Error updating customer:", error);
         res.status(400).send("Failed to update customer")

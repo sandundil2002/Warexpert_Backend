@@ -49,7 +49,7 @@ export async function updateStaff(id: string, staff: StaffModel) {
                 warehouseId: staff.warehouseId,
             }
         });
-        console.log("Staff Updated successfully \n", updatedStaff);
+        console.log("Staff Updated successfully");
         return updatedStaff;
     }
     catch (error) {

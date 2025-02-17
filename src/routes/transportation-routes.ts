@@ -63,7 +63,7 @@ router.patch('/patch/:id', async (req, res) => {
 
         const updatedTransportation = await updateTransportation(transportationId, transportation);
         if (updatedTransportation) {
-            res.status(204).json("Transportation Updated");
+            res.status(200).json(updatedTransportation);
         }
     } catch (error) {
         console.log(error);

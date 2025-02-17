@@ -21,8 +21,7 @@ router.get('/get', async (req, res) => {
 
 router.post('/post', upload.single('image'), async (req, res) => {
     try {
-        const { name, location, capacity, size } = req.body;
-        const image = req.file ? req.file.buffer.toString("base64"): undefined;
+        const { name, location, capacity, size, image } = req.body;
 
         const warehouseModel = new WarehouseModel(
             "",
@@ -63,7 +62,7 @@ router.patch('/patch/:id', upload.single('image'), async (req, res) => {
         );
 
         const updatedWarehouse = await updateWarehouse(id, warehouseData);
-        res.status(204).json(updatedWarehouse);
+        res.status(200).json(updatedWarehouse);
     } catch (error) {
         console.error("Update failed:", error);
         res.status(500).json({ message: "Failed to update warehouse" });

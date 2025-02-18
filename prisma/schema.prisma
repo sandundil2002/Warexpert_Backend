@@ -20,6 +20,13 @@ enum Gender {
   OTHER
 }
 
+model User {
+  id       Int      @id @default(autoincrement())
+  username String   @unique
+  password String
+  role     UserRole
+}
+
 model Warehouse {
   id        String   @id
   name      String

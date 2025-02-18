@@ -7,15 +7,18 @@ import logsRoutes from "./src/routes/logs-routes";
 import equipmentRouter from "./src/routes/equipment-router";
 import transportationRoutes from "./src/routes/transportation-routes";
 import bodyParser from 'body-parser';
+import cors from 'cors';
+import dotenv from 'dotenv';
+import authRoutes, {authenticateToken} from "./src/routes/auth-routes";
 
+dotenv.config();
 const app = express();
 
-app.use('/',(req,res,next)=>{
-    res.header("Access-Control-Allow-Origin", "*");
-    res.header("Access-Control-Allow-Methods", "GET, POST, PATCH, DELETE");
-    res.header('Access-Control-Allow-Headers', 'Origin, X-Requested-With, content-type');
-    next();
-});
+app.use(cors({
+    origin: 'http://localhost:5173',
+    methods: ['GET', 'POST', 'PATCH', 'DELETE'],
+    credentials: true,
+}));
 
 app.use(bodyParser.json({ limit: '50mb' }));
 app.use(bodyParser.urlencoded({ limit: '50mb', extended: true }));
@@ -23,6 +26,7 @@ app.use(bodyParser.urlencoded({ limit: '50mb', extended: true }));
 app.use(express.json({ limit: '50mb' }));
 app.use(express.urlencoded({ limit: '50mb', extended: true }));
 
+app.use('/auth', authRoutes);
 app.use('/warehouse', warehouseRoutes);
 app.use('/staff', staffRoutes);
 app.use('/inventory', inventoryRoutes);
@@ -30,6 +34,8 @@ app.use('/customer', customerRoutes);
 app.use('/logs', logsRoutes);
 app.use('/equipment', equipmentRouter);
 app.use('/transportation', transportationRoutes);
+
+app.use(authenticateToken);
 
 app.listen(3000, () => {
     console.log('Server is running on port 3000');

@@ -21,9 +21,27 @@ export async function sendOTPEmail(recipientEmail: string) {
     const mailOptions = {
         from: 'nold9343@gmail.com',
         to: recipientEmail,
-        subject: 'Your OTP Code',
-        html: `<p>Welcome to Warexpert!</p>
-        <p>Your OTP code is: <strong>${otp}</strong>. It is valid for 10 minutes.</p>`
+        subject: 'Warexpert - Verification Code',
+        html: `
+    <!DOCTYPE html>
+    <html lang="en">
+    <head>
+        <title>Warexpert - Verification Code</title>
+        <style>
+            body { font-family: Arial, sans-serif; line-height: 1.6; color: #333; }
+            title { font-size: 1.5em; font-weight: bold; }
+            .logo { color: #007bff; font-weight: bold; } 
+            .code { color: #ff4500; font-size: 1.2em; font-weight: bold; } 
+        </style>
+    </head>
+    <body>
+        <p style="font-weight: bold">Hello Warexpert User,</p>
+        <p>Your verification code for Warexpert is: <span class="code">${otp}</span></p>
+        <p>This code will expire in 10 minutes. Please do not share this code with anyone.</p>
+        <p>Best regards,<br><span class="logo">Warexpert Team</span></p>
+    </body>
+    </html>
+    `
     };
 
     try {
@@ -36,10 +54,18 @@ export async function sendOTPEmail(recipientEmail: string) {
     }
 }
 
-// sendOTPEmail('sandundil2002@gmail.com')
-//     .then((otp) => {
-//         console.log('OTP sent and generated:', otp);
-//     })
-//     .catch((err) => {
-//         console.error('Failed to send OTP:', err);
-//     });
+export async function verifyOTP(otp: string, enteredOTP: string | null) {
+    const expiryTime = 10 * 60 * 1000;
+    const currentTime = new Date().getTime();
+
+    if (currentTime - expiryTime > parseInt(enteredOTP as string)) {
+        console.error('OTP has expired');
+        return false;
+    } else if (otp !== enteredOTP) {
+        console.error('Invalid OTP');
+        return false;
+    } else {
+        console.log('OTP verified');
+        return true;
+    }
+}

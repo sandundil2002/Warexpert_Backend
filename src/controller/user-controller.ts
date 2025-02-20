@@ -3,6 +3,7 @@ import bcrypt from 'bcrypt';
 import {sendOTPEmail} from "./otp-controller";
 
 const prisma = new PrismaClient();
+let otpStore: { [key: string]: string } = {};
 
 export async function createUser(user: { username: string; password: string }) {
     const hashedPassword = await bcrypt.hash(user.password, 10);
@@ -73,7 +74,7 @@ export async function validateUser(user: { username: string; password: string })
             return false;
         } else {
             sendOTPEmail(username).then((otp) => {
-                localStorage.setItem("otp", otp);
+                otpStore[username] = otp;
                 console.log('OTP sent and generated:', otp);
             }).catch((err) => {
                 console.error('Failed to send OTP:', err);
@@ -85,3 +86,21 @@ export async function validateUser(user: { username: string; password: string })
         return false;
     }
 }
+
+export async function getUserRole(userName: string) {
+    try {
+        const staffMember = await prisma.staff.findUnique({
+            where: {
+                email: userName,
+            },
+        });
+
+        if (staffMember) {
+            return staffMember.role;
+        }
+    } catch (error) {
+        console.log('Error getting user role:', error);
+    }
+}
+
+export { otpStore };

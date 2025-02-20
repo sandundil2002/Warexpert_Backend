@@ -27,6 +27,8 @@ app.use(express.json({ limit: '50mb' }));
 app.use(express.urlencoded({ limit: '50mb', extended: true }));
 
 app.use('/auth', authRoutes);
+app.use(authenticateToken);
+
 app.use('/warehouse', warehouseRoutes);
 app.use('/staff', staffRoutes);
 app.use('/inventory', inventoryRoutes);
@@ -34,8 +36,6 @@ app.use('/customer', customerRoutes);
 app.use('/logs', logsRoutes);
 app.use('/equipment', equipmentRouter);
 app.use('/transportation', transportationRoutes);
-
-app.use(authenticateToken);
 
 app.listen(3000, () => {
     console.log('Server is running on port 3000');

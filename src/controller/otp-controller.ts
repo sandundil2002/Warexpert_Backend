@@ -54,18 +54,12 @@ export async function sendOTPEmail(recipientEmail: string) {
     }
 }
 
-export async function verifyOTP(otp: string, enteredOTP: string | null) {
-    const expiryTime = 10 * 60 * 1000;
-    const currentTime = new Date().getTime();
-
-    if (currentTime - expiryTime > parseInt(enteredOTP as string)) {
-        console.error('OTP has expired');
+export async function verifyOTP(enteredOTP: string, storedOTP: string | null): Promise<boolean> {
+    if (enteredOTP !== storedOTP) {
+        console.error("Invalid OTP.");
         return false;
-    } else if (otp !== enteredOTP) {
-        console.error('Invalid OTP');
-        return false;
-    } else {
-        console.log('OTP verified');
-        return true;
     }
+
+    console.log("OTP verified successfully.");
+    return true;
 }

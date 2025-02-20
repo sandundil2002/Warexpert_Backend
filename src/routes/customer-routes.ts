@@ -1,11 +1,12 @@
 import express from "express";
 import {createCustomer, deleteCustomer, getCustomers, updateCustomer} from "../controller/customer-controller";
 import {CustomerModel} from "../model/customer-model";
+import authorizeRole from "../middleware/user-authorize";
 
 const router = express.Router();
 router.use(express.json());
 
-router.get('/get', async (req, res) => {
+router.get('/get', authorizeRole("MANAGER"), async (req, res) => {
     try {
         const customers = await getCustomers();
         res.status(200).json(customers);

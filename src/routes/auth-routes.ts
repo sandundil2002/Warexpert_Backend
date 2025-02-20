@@ -1,6 +1,6 @@
 import dotenv from "dotenv";
 import express from "express";
-import {createUser, validateUser, verifyUserCredentials} from "../controller/user-controller";
+import {createUser, getUserRole, otpStore, validateUser, verifyUserCredentials} from "../controller/user-controller";
 import jwt, {Secret} from 'jsonwebtoken';
 import {verifyOTP} from "../controller/otp-controller";
 
@@ -22,10 +22,13 @@ router.post("/signin", async (req, res) => {
         const isVerified =  await verifyUserCredentials(user);
 
         if(isVerified){
-            const token = jwt.sign({ username }, process.env.SECRET_KEY as Secret, {expiresIn: "5m"});
-            // const refreshToken = jwt.sign({ username }, process.env.REFRESH_TOKEN as Secret, {expiresIn: "7d"});
-            // res.json({accessToken : token, refreshToken : refreshToken});
-            res.json({accessToken : token});
+            const role = await getUserRole(username);
+            const token = jwt.sign(
+                { role }, process.env.SECRET_KEY as Secret, {expiresIn: "5m"}
+            );
+            // const token = jwt.sign({ username }, process.env.SECRET_KEY as Secret, {expiresIn: "5m"});
+            const refreshToken = jwt.sign({ username }, process.env.REFRESH_TOKEN as Secret, {expiresIn: "7d"});
+            res.status(200).json({accessToken : token, refreshToken : refreshToken});
         }else{
             return res.status(401).json({ error: "Invalid username or password." });
         }
@@ -46,9 +49,9 @@ router.post("/signup", async (req, res) => {
         const validated = await validateUser(user);
 
         if (validated) {
-            res.status(200).send('OTP sent to email');
+            res.status(200).json({ success: true, message: 'OTP sent to email' });
         } else {
-            res.status(400).send('User already exists');
+            res.status(400).json({ success: false, message: 'User already exists' });
         }
     }catch(err){
         console.log(err);
@@ -59,19 +62,19 @@ router.post("/signup", async (req, res) => {
 router.post("/verify-otp", async (req, res) => {
     const username = req.body.user.username;
     const password = req.body.user.password;
-    const otp: string = req.body.otp;
-    const otpStored = localStorage.getItem("otp");
+    const enteredOTP: string = req.body.otp;
+    const storedOTP = otpStore[username];
 
-    const valid = await verifyOTP(otp, otpStored);
+    const valid = await verifyOTP(enteredOTP, storedOTP);
 
     if (valid) {
         const created = await createUser({username, password});
 
         if (created) {
             const token = jwt.sign({ username }, process.env.SECRET_KEY as Secret, {expiresIn: "5m"});
-            // const refreshToken = jwt.sign({ username }, process.env.REFRESH_TOKEN as Secret, {expiresIn: "7d"});
-            // res.json({accessToken : token, refreshToken : refreshToken});
-            res.status(201).json({accessToken : token});
+            const refreshToken = jwt.sign({ username }, process.env.REFRESH_TOKEN as Secret, {expiresIn: "7d"});
+            res.status(201).json({success: true, accessToken : token, refreshToken : refreshToken});
+            delete otpStore[username];
         }
     } else {
         res.status(400).send('Invalid OTP');
@@ -98,7 +101,6 @@ export function authenticateToken(req : express.Request, res : express.Response,
     const authHeader = req.headers.authorization;
     const token = authHeader?.split(' ')[1];
 
-    console.log(token);
     if(!token)res.status(401).send('No token provided');
 
     try{

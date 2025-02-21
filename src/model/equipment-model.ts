@@ -5,8 +5,8 @@ export class EquipmentModel {
     status: string;
     staffId: string;
     warehouseId: string;
-    createdAt: Date;
-    updatedAt: Date;
+    createdAt = Date;
+    updatedAt = Date;
 
     constructor(id: string, type: string, category: string, status: string, staffId: string, warehouseId: string) {
         this.id = id;
@@ -15,7 +15,5 @@ export class EquipmentModel {
         this.status = status;
         this.staffId = staffId;
         this.warehouseId = warehouseId;
-        this.createdAt = new Date();
-        this.updatedAt = new Date();
     }
 }

@@ -26,7 +26,8 @@ router.get('/get', async (req, res) => {
 
 router.post('/post', upload.single('image') , async (req, res) => {
     try {
-        const { name, category, quantity, status, warehouseId, customerId, image } = req.body;
+        const { name, category, quantity, warehouseId, customerId, image, expiry } = req.body;
+        const status = "Available";
 
         const inventory = new InventoryItemModel(
             "",
@@ -36,7 +37,8 @@ router.post('/post', upload.single('image') , async (req, res) => {
             status,
             warehouseId,
             customerId,
-            image
+            image,
+            expiry
         );
 
         const addedInventory = await createInventoryItem(inventory);

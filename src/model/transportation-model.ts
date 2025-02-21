@@ -5,8 +5,8 @@ export class TransportationModel {
     numberPlate: string;
     status: string;
     driverId: string;
-    createdAt: Date;
-    updatedAt: Date;
+    createdAt = Date;
+    updatedAt = Date;
 
     constructor(id: string, type: string, capacity: number, numberPlate: string, status: string, driverId: string) {
         this.id = id;
@@ -15,7 +15,5 @@ export class TransportationModel {
         this.numberPlate = numberPlate;
         this.status = status;
         this.driverId = driverId;
-        this.createdAt = new Date();
-        this.updatedAt = new Date();
     }
 }

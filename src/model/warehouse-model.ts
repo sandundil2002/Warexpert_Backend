@@ -5,8 +5,8 @@ export class WarehouseModel {
     capacity: number;
     size: number;
     image?: string;
-    createdAt: Date;
-    updatedAt: Date;
+    createdAt = Date;
+    updatedAt = Date;
 
     constructor(id: string, name: string, location: string, capacity: number, size: number, image?: string) {
 
@@ -20,7 +20,5 @@ export class WarehouseModel {
         this.capacity = capacity;
         this.size = size;
         this.image = image;
-        this.createdAt = new Date();
-        this.updatedAt = new Date();
     }
 }

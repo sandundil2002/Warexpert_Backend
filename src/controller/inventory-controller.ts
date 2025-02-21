@@ -25,7 +25,7 @@ export async function createInventoryItem(inventory: InventoryItemModel) {
                 warehouseId: inventory.warehouseId,
                 customerId: inventory.customerId,
                 image: inventory.image,
-                updatedAt: new Date()
+                expiry: String(inventory.expiry)
             }
         });
         console.log("Inventory Item Created successfully \n", createInventory);
@@ -47,7 +47,6 @@ export async function updateInventoryItem(id: string, inventory: InventoryItemMo
                 warehouseId: inventory.warehouseId,
                 customerId: inventory.customerId,
                 image: inventory.image,
-                updatedAt: new Date()
             }
         });
         console.log("Inventory Item Updated successfully \n", updateInventory);

@@ -9,8 +9,8 @@ export class StaffModel {
     email: string;
     mobile: string;
     warehouseId: string;
-    createdAt: Date;
-    updatedAt: Date;
+    createdAt = Date;
+    updatedAt = Date;
 
     constructor(id: string, name: string, role: UserRole, shiftSchedule: string, gender: Gender, email: string, mobile: string, warehouseId: string) {
 
@@ -26,7 +26,5 @@ export class StaffModel {
         this.email = email;
         this.mobile = mobile;
         this.warehouseId = warehouseId;
-        this.createdAt = new Date();
-        this.updatedAt = new Date();
     }
 }

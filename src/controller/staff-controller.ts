@@ -25,7 +25,6 @@ export async function createStaff(staff: StaffModel) {
                 email: staff.email,
                 mobile: staff.mobile,
                 warehouseId: staff.warehouseId,
-                updatedAt: new Date()
             }
         });
         console.log("Staff Created successfully \n", createdStaff);

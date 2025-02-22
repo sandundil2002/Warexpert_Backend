@@ -23,11 +23,8 @@ router.post("/signin", async (req, res) => {
 
         if(isVerified){
             const role = await getUserRole(username);
-            const token = jwt.sign(
-                { role }, process.env.SECRET_KEY as Secret, {expiresIn: "5m"}
-            );
-            // const token = jwt.sign({ username }, process.env.SECRET_KEY as Secret, {expiresIn: "5m"});
-            const refreshToken = jwt.sign({ username }, process.env.REFRESH_TOKEN as Secret, {expiresIn: "7d"});
+            const token = jwt.sign({ role }, process.env.SECRET_KEY as Secret, {expiresIn: "15m"});
+            const refreshToken = jwt.sign({ username }, process.env.REFRESH_TOKEN as Secret, {expiresIn: "1d"});
             res.status(200).json({accessToken : token, refreshToken : refreshToken});
         }else{
             return res.status(401).json({ error: "Invalid username or password." });
@@ -71,8 +68,9 @@ router.post("/verify-otp", async (req, res) => {
         const created = await createUser({username, password});
 
         if (created) {
-            const token = jwt.sign({ username }, process.env.SECRET_KEY as Secret, {expiresIn: "5m"});
-            const refreshToken = jwt.sign({ username }, process.env.REFRESH_TOKEN as Secret, {expiresIn: "7d"});
+            const role = await getUserRole(username);
+            const token = jwt.sign({ role }, process.env.SECRET_KEY as Secret, {expiresIn: "15m"});
+            const refreshToken = jwt.sign({ username }, process.env.REFRESH_TOKEN as Secret, {expiresIn: "1d"});
             res.status(201).json({success: true, accessToken : token, refreshToken : refreshToken});
             delete otpStore[username];
         }
@@ -81,19 +79,36 @@ router.post("/verify-otp", async (req, res) => {
     }
 });
 
+// @ts-ignore
 router.post("/refresh-token", async (req, res) => {
-    const authHeader = req.headers.authorization;
-    const refresh_token = authHeader?.split(' ')[1];
+    const { refreshToken } = req.body;
 
-    if(!refresh_token)res.status(401).send('No token provided');
+    if (!refreshToken) {
+        return res.status(401).json({ message: "No refresh token provided" });
+    }
 
-    try{
-        const payload = jwt.verify(refresh_token as string, process.env.REFRESH_TOKEN as Secret) as {username: string, iat: number};
-        const token = jwt.sign({ username: payload.username }, process.env.SECRET_KEY as Secret, {expiresIn: "5m"});
-        res.json({accessToken : token});
-    }catch(err){
-        console.log(err);
-        res.status(400).send(err);
+    try {
+        // Verify the refresh token
+        const payload = jwt.verify(refreshToken, process.env.REFRESH_TOKEN as string) as { username: string, iat: number };
+
+        const accessToken = jwt.sign(
+            { username: payload.username },
+            process.env.SECRET_KEY as string,
+            { expiresIn: "15m" }
+        );
+
+        const newRefreshToken = jwt.sign(
+            { username: payload.username },
+            process.env.REFRESH_TOKEN as string,
+            { expiresIn: "1d" }
+        );
+
+        res.json({
+            accessToken,
+            refreshToken: newRefreshToken,
+        });
+    } catch (err) {
+        console.error("Token verification failed:", err);
     }
 });
 

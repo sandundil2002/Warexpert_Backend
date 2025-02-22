@@ -1,4 +1,4 @@
-import { PrismaClient } from "@prisma/client";
+import {PrismaClient} from "@prisma/client";
 
 const prisma = new PrismaClient();
 
@@ -13,7 +13,7 @@ export const getStockSummary = async (query: StockSummaryQuery) => {
         if (query.warehouseId) whereClause["warehouseId"] = query.warehouseId;
         if (query.category) whereClause["category"] = query.category;
 
-        const stockSummary = await prisma.inventoryItem.groupBy({
+        return await prisma.inventoryItem.groupBy({
             by: ["warehouseId", "category"],
             _count: {
                 id: true,
@@ -23,8 +23,6 @@ export const getStockSummary = async (query: StockSummaryQuery) => {
             },
             where: whereClause,
         });
-
-        return stockSummary;
     } catch (error) {
         console.error("Error fetching stock summary:", error);
         throw new Error("Failed to fetch stock summary.");
@@ -32,22 +30,20 @@ export const getStockSummary = async (query: StockSummaryQuery) => {
 };
 
 interface LowCapacityQuery {
-    thresholdPercentage?: number; // Default: 80%
+    thresholdPercentage?: number;
 }
 
 export const getLowCapacityAlerts = async (query: LowCapacityQuery) => {
     try {
         const { thresholdPercentage = 80 } = query;
 
-        // Fetch all warehouses and their inventory items
         const warehouses = await prisma.warehouse.findMany({
             include: {
-                inventory: true, // Include related inventory items
+                inventory: true,
             },
         });
 
-        // Calculate low capacity alerts
-        const lowCapacityAlerts = warehouses
+        return warehouses
             .map((warehouse) => {
                 const totalQuantity = warehouse.inventory.reduce(
                     (sum, item) => sum + (item.quantity || 0),
@@ -66,9 +62,7 @@ export const getLowCapacityAlerts = async (query: LowCapacityQuery) => {
                 }
                 return null;
             })
-            .filter(Boolean); // Filter out warehouses below the threshold
-
-        return lowCapacityAlerts;
+            .filter(Boolean);
     } catch (error) {
         console.error("Error fetching low capacity alerts:", error);
         throw new Error("Failed to fetch low capacity alerts.");

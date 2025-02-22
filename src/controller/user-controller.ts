@@ -1,6 +1,7 @@
 import {PrismaClient} from '@prisma/client';
 import bcrypt from 'bcrypt';
 import {sendOTPEmail} from "./otp-controller";
+import {getUserAccount, updateUserAccount} from "../service/user-service";
 
 const prisma = new PrismaClient();
 let otpStore: { [key: string]: string } = {};
@@ -84,6 +85,24 @@ export async function validateUser(user: { username: string; password: string })
     } catch (error) {
         console.error(error);
         return false;
+    }
+}
+
+export async function getUserDetails(username: string) {
+    try {
+        const user = await prisma.staff.findUnique({
+            where: { email: username },
+        });
+
+        if (user) {
+            console.log("User details:", user);
+            return user;
+        } else {
+            return { message: "User not found" };
+        }
+    } catch (error) {
+        console.error("Error getting user details:", error);
+        throw new Error("Database error");
     }
 }
 

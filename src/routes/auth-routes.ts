@@ -25,7 +25,7 @@ router.post("/signin", async (req, res) => {
             const role = await getUserRole(username);
             const token = jwt.sign({ role }, process.env.SECRET_KEY as Secret, {expiresIn: "15m"});
             const refreshToken = jwt.sign({ username }, process.env.REFRESH_TOKEN as Secret, {expiresIn: "1d"});
-            res.status(200).json({accessToken : token, refreshToken : refreshToken});
+            res.status(200).json({accessToken : token, refreshToken : refreshToken, username: username});
         }else{
             return res.status(401).json({ error: "Invalid username or password." });
         }

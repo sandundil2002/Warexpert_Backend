@@ -55,7 +55,7 @@ router.post('/post', upload.single('image') , async (req, res) => {
 router.patch('/patch/:id',  upload.single('image'), async (req, res) => {
     try {
         const inventoryId = req.params.id;
-        const { name, category, quantity, status, warehouseId, customerId, image } = req.body;
+        const { name, category, quantity, status, warehouseId, customerId, image, expiry } = req.body;
 
         if (!inventoryId) {
             return res.status(400).json({ message: "Inventory ID is required" });
@@ -69,7 +69,8 @@ router.patch('/patch/:id',  upload.single('image'), async (req, res) => {
             status,
             warehouseId,
             customerId,
-            image
+            image,
+            expiry
         );
 
         const updatedInventory = await updateInventoryItem(inventoryId, inventory);

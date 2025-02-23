@@ -12,6 +12,7 @@ import dotenv from 'dotenv';
 import authRoutes, {authenticateToken} from "./src/routes/auth-routes";
 import reportRoutes from "./src/routes/report-routes";
 import userRoutes from "./src/routes/user-routes";
+import paymentRoutes from "./src/routes/payment-routes";
 
 dotenv.config();
 const app = express();
@@ -40,6 +41,7 @@ app.use('/equipment', equipmentRouter);
 app.use('/transportation', transportationRoutes);
 app.use('/reports', reportRoutes);
 app.use('/user', userRoutes);
+app.use('/payment', paymentRoutes);
 
 app.listen(3000, () => {
     console.log('Server is running on port 3000');

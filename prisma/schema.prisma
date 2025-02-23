@@ -37,7 +37,6 @@ model Warehouse {
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
-  // Relationships
   staff      Staff[]
   inventory  InventoryItem[]
   equipment  Equipment[]
@@ -55,7 +54,6 @@ model InventoryItem {
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
-  // Relationships
   warehouse   Warehouse          @relation(fields: [warehouseId], references: [id], onDelete: Cascade)
   warehouseId String
   customer    Customer?          @relation(fields: [customerId], references: [id], onDelete: SetNull)
@@ -75,7 +73,6 @@ model Staff {
   createdAt     DateTime @default(now())
   updatedAt     DateTime @updatedAt
 
-  // Relationships
   warehouse      Warehouse        @relation(fields: [warehouseId], references: [id], onDelete: Cascade)
   warehouseId    String
   operations     OperationsLog[]
@@ -89,7 +86,6 @@ model OperationsLog {
   incidents String?
   createdAt DateTime @default(now())
 
-  // Relationships
   staff       Staff         @relation(fields: [staffId], references: [id], onDelete: Cascade)
   staffId     String
   warehouse   Warehouse     @relation(fields: [warehouseId], references: [id], onDelete: Cascade)
@@ -106,7 +102,6 @@ model Equipment {
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
-  // Relationships
   staff       Staff     @relation(fields: [staffId], references: [id], onDelete: Cascade)
   staffId     String
   warehouse   Warehouse @relation(fields: [warehouseId], references: [id], onDelete: Cascade)
@@ -122,7 +117,6 @@ model Transportation {
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
 
-  // Relationships
   driver   Staff  @relation(fields: [driverId], references: [id], onDelete: Cascade)
   driverId String
 }
@@ -136,24 +130,24 @@ model Customer {
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
-  // Relationships
   inventory InventoryItem[]
+  payments  Payment[]
 }
 
 model Payment {
-  id             String             @id
-  amount         Float
-  currency       String
-  status         String
-  description    String?
-  createdAt      DateTime           @default(now())
-  updatedAt      DateTime           @updatedAt
-  // Relationships
+  id        String   @id
+  amount    Float
+  status    String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  customer       Customer?          @relation(fields: [customerId], references: [id], onDelete: SetNull)
+  customerId     String?
   inventoryItems PaymentInventory[]
 }
 
 model PaymentInventory {
-  paymentInventoryId String        @id
+  paymentInventoryId Int           @id @default(autoincrement())
   paymentId          String
   inventoryItemId    String
   payment            Payment       @relation(fields: [paymentId], references: [id], onDelete: Cascade)

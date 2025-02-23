@@ -47,6 +47,7 @@ export async function updateInventoryItem(id: string, inventory: InventoryItemMo
                 warehouseId: inventory.warehouseId,
                 customerId: inventory.customerId,
                 image: inventory.image,
+                expiry: inventory.expiry
             }
         });
         console.log("Inventory Item Updated successfully \n", updateInventory);

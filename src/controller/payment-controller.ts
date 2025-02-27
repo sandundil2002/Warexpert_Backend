@@ -29,12 +29,13 @@ export const createPayment = async (
                     throw new Error(`Insufficient stock for item: ${inventoryItem?.name}`);
                 }
 
+                const newQuantity = inventoryItem.quantity - quantity;
+
                 await tx.inventoryItem.update({
                     where: { id: inventoryItemId },
                     data: {
-                        quantity: {
-                            decrement: quantity,
-                        },
+                        quantity: newQuantity,
+                        status: newQuantity === 0 ? "RETURNED" : inventoryItem.status
                     },
                 });
 

@@ -1,7 +1,6 @@
 import {PrismaClient} from '@prisma/client';
 import bcrypt from 'bcrypt';
 import {sendOTPEmail} from "./otp-controller";
-import {getUserAccount, updateUserAccount} from "../service/user-service";
 
 const prisma = new PrismaClient();
 let otpStore: { [key: string]: string } = {};

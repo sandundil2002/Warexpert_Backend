@@ -14,6 +14,8 @@ import reportRoutes from "./src/routes/report-routes";
 import userRoutes from "./src/routes/user-routes";
 import paymentRoutes from "./src/routes/payment-routes";
 import trackingService from "./src/service/tracking-service";
+import notificationService from "./src/service/notification-service";
+import contactService from "./src/service/contact-service";
 
 dotenv.config();
 const app = express();
@@ -31,6 +33,8 @@ app.use(express.json({ limit: '50mb' }));
 app.use(express.urlencoded({ limit: '50mb', extended: true }));
 
 app.use('/tracking', trackingService);
+app.use('/notification', notificationService);
+app.use('/contact', contactService)
 app.use('/auth', authRoutes);
 
 app.use(authenticateToken);

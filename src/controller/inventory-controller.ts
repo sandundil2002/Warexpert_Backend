@@ -1,6 +1,7 @@
-import { PrismaClient } from '@prisma/client';
+import {PrismaClient} from '@prisma/client';
 import {InventoryItemModel} from "../model/inventory-model";
 import {transporter} from "./otp-controller";
+import {PackageModel} from "../model/package-model";
 
 const prisma = new PrismaClient();
 
@@ -74,6 +75,47 @@ export async function deleteInventoryItem(id: string) {
     } catch(error) {
         console.error("Error deleting inventory item:", error);
         throw new Error("Failed to delete inventory item");
+    }
+}
+
+export async function trackPackage(trackingId: string): Promise<PackageModel | null> {
+    try {
+        const inventory = await prisma.inventoryItem.findFirst({
+            where: { trackingNumber: trackingId },
+        });
+
+        if (!inventory) {
+            throw new Error("Package not found.");
+        }
+
+        const warehouse = await prisma.warehouse.findUnique({
+            where: { id: inventory.warehouseId },
+        });
+
+        const customer = await prisma.customer.findUnique({
+            // @ts-ignore
+            where: { id: inventory.customerId },
+        });
+
+        return {
+            id: inventory.id,
+            name: inventory.name,
+            category: inventory.category,
+            quantity: inventory.quantity,
+            status: inventory.status,
+            warehouseName: warehouse?.name || "Unknown Warehouse",
+            location: warehouse?.location || "Unknown Location",
+            customerName: customer?.name || "Unknown Customer",
+            customerAddress: customer?.address || "Unknown Address",
+            image: inventory.image || "",
+            expiry: inventory.expiry || "No Expiry",
+            trackingNumber: String(inventory.trackingNumber),
+            createdAt: inventory.createdAt,
+            updatedAt: inventory.updatedAt,
+        };
+    } catch (error) {
+        console.error("Error tracking package:", error);
+        return null;
     }
 }
 

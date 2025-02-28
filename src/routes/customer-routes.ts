@@ -6,7 +6,7 @@ import authorizeRole from "../middleware/user-authorize";
 const router = express.Router();
 router.use(express.json());
 
-router.get('/get', authorizeRole("MANAGER"), async (req, res) => {
+router.get('/get', async (req, res) => {
     try {
         const customers = await getCustomers();
         res.status(200).json(customers);
@@ -16,7 +16,7 @@ router.get('/get', authorizeRole("MANAGER"), async (req, res) => {
     }
 });
 
-router.post('/post', async (req, res) => {
+router.post('/post', authorizeRole("MANAGER", "SUPERVISOR"), async (req, res) => {
     try {
         const { name, address, email, mobile } = req.body;
 
@@ -39,7 +39,7 @@ router.post('/post', async (req, res) => {
 });
 
 // @ts-ignore
-router.patch('/patch/:id', async (req, res) => {
+router.patch('/patch/:id', authorizeRole("MANAGER", "SUPERVISOR"), async (req, res) => {
     try {
         const { id } = req.params;
         const { name, address, email, mobile } = req.body;
@@ -65,7 +65,7 @@ router.patch('/patch/:id', async (req, res) => {
 });
 
 // @ts-ignore
-router.delete('/delete/:id', async (req, res) => {
+router.delete('/delete/:id', authorizeRole("MANAGER", "SUPERVISOR"), async (req, res) => {
     const customerId: string = req.params.id;
 
     try {

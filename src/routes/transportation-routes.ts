@@ -6,6 +6,7 @@ import {
     updateTransportation
 } from "../controller/transportation-controller";
 import {TransportationModel} from "../model/transportation-model";
+import authorizeRole from "../middleware/user-authorize";
 
 const router = express.Router();
 router.use(express.json());
@@ -20,7 +21,7 @@ router.get('/get', async (req, res) => {
     }
 });
 
-router.post('/post', async (req, res) => {
+router.post('/post', authorizeRole("MANAGER", "SUPERVISOR"), async (req, res) => {
     try {
         const { type, capacity, numberPlate, status, driverId } = req.body;
         const transportation = new TransportationModel(
@@ -43,7 +44,7 @@ router.post('/post', async (req, res) => {
 });
 
 // @ts-ignore
-router.patch('/patch/:id', async (req, res) => {
+router.patch('/patch/:id', authorizeRole("MANAGER", "SUPERVISOR"), async (req, res) => {
     try {
         const transportationId = req.params.id;
         const { type, capacity, numberPlate, status, driverId } = req.body;
@@ -72,7 +73,7 @@ router.patch('/patch/:id', async (req, res) => {
 });
 
 // @ts-ignore
-router.delete('/delete/:id', async (req, res) => {
+router.delete('/delete/:id', authorizeRole("MANAGER", "SUPERVISOR"), async (req, res) => {
     try {
         const transportationId = req.params.id;
         if (!transportationId) {

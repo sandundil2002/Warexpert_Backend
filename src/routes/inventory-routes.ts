@@ -7,6 +7,7 @@ import {
 } from "../controller/inventory-controller";
 import multer from "multer";
 import {InventoryItemModel} from "../model/inventory-model";
+import authorizeRole from "../middleware/user-authorize";
 
 const router = express.Router();
 router.use(express.json());
@@ -24,7 +25,7 @@ router.get('/get', async (req, res) => {
     }
 });
 
-router.post('/post', upload.single('image') , async (req, res) => {
+router.post('/post', authorizeRole("MANAGER", "SUPERVISOR"), upload.single('image') , async (req, res) => {
     try {
         const { name, category, quantity, warehouseId, customerId, image, expiry } = req.body;
         const status = "Available";
@@ -52,7 +53,7 @@ router.post('/post', upload.single('image') , async (req, res) => {
 });
 
 // @ts-ignore
-router.patch('/patch/:id',  upload.single('image'), async (req, res) => {
+router.patch('/patch/:id', authorizeRole("MANAGER", "SUPERVISOR"), upload.single('image'), async (req, res) => {
     try {
         const inventoryId = req.params.id;
         const { name, category, quantity, status, warehouseId, customerId, image, expiry } = req.body;
@@ -82,7 +83,7 @@ router.patch('/patch/:id',  upload.single('image'), async (req, res) => {
 });
 
 // @ts-ignore
-router.delete('/delete/:id', async (req, res) => {
+router.delete('/delete/:id', authorizeRole("MANAGER", "SUPERVISOR"), async (req, res) => {
     const { id } = req.params;
 
     try {

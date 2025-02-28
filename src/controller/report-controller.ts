@@ -1,37 +1,70 @@
-import { Request, Response } from "express";
-import {getLowCapacityAlerts, getStockSummary} from "../service/report-service";
+import {PrismaClient} from "@prisma/client";
 
-export const getStockSummaryController = async (req: Request, res: Response) => {
+const prisma = new PrismaClient();
+
+interface StockSummaryQuery {
+    warehouseId?: string;
+    category?: string;
+}
+
+interface LowCapacityQuery {
+    thresholdPercentage?: number;
+}
+
+export const getStockSummary = async (query: StockSummaryQuery) => {
     try {
-        const { warehouseId, category } = req.query;
+        const whereClause: any = {};
+        if (query.warehouseId) whereClause["warehouseId"] = query.warehouseId;
+        if (query.category) whereClause["category"] = query.category;
 
-        const query: { warehouseId?: string; category?: string } = {};
-        if (typeof warehouseId === "string") query.warehouseId = warehouseId;
-        if (typeof category === "string") query.category = category;
-
-        const stockSummary = await getStockSummary(query);
-
-        res.status(200).json(stockSummary);
+        return await prisma.inventoryItem.groupBy({
+            by: ["warehouseId", "category"],
+            _count: {
+                id: true,
+            },
+            _sum: {
+                quantity: true,
+            },
+            where: whereClause,
+        });
     } catch (error) {
-        console.error(error);
-        res.status(500).json({ message: "Error generating stock summary." });
+        console.error("Error fetching stock summary:", error);
+        throw new Error("Failed to fetch stock summary.");
     }
 };
 
-export const getLowCapacityAlertsController = async (req: Request, res: Response) => {
+export const getLowCapacityAlerts = async (query: LowCapacityQuery) => {
     try {
-        const { thresholdPercentage } = req.query;
+        const { thresholdPercentage = 80 } = query;
 
-        const query: { thresholdPercentage?: number } = {};
-        if (typeof thresholdPercentage === "string") {
-            query.thresholdPercentage = parseFloat(thresholdPercentage);
-        }
+        const warehouses = await prisma.warehouse.findMany({
+            include: {
+                inventory: true,
+            },
+        });
 
-        const lowCapacityAlerts = await getLowCapacityAlerts(query);
+        return warehouses
+            .map((warehouse) => {
+                const totalQuantity = warehouse.inventory.reduce(
+                    (sum, item) => sum + (item.quantity || 0),
+                    0
+                );
+                const capacityUsedPercentage = (totalQuantity / warehouse.capacity) * 100;
 
-        res.status(200).json(lowCapacityAlerts);
+                if (capacityUsedPercentage >= thresholdPercentage) {
+                    return {
+                        warehouseId: warehouse.id,
+                        warehouseName: warehouse.name,
+                        totalQuantity,
+                        capacity: warehouse.capacity,
+                        capacityUsedPercentage,
+                    };
+                }
+                return null;
+            })
+            .filter(Boolean);
     } catch (error) {
-        console.error(error);
-        res.status(500).json({ message: "Error generating low capacity alerts." });
+        console.error("Error fetching low capacity alerts:", error);
+        throw new Error("Failed to fetch low capacity alerts.");
     }
 };

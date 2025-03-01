@@ -6,6 +6,7 @@ export interface PackageModel {
     status: string;
     warehouseName: string;
     location: string;
+    customerId: string;
     customerName: string;
     customerAddress: string;
     image: string;

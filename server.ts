@@ -16,6 +16,7 @@ import paymentRoutes from "./src/routes/payment-routes";
 import trackingService from "./src/service/tracking-service";
 import notificationService from "./src/service/notification-service";
 import contactService from "./src/service/contact-service";
+import paymentService from "./src/service/payment-service";
 
 dotenv.config();
 const app = express();
@@ -35,6 +36,7 @@ app.use(express.urlencoded({ limit: '50mb', extended: true }));
 app.use('/tracking', trackingService);
 app.use('/notification', notificationService);
 app.use('/contact', contactService)
+app.use('/pay', paymentService);
 app.use('/auth', authRoutes);
 
 app.use(authenticateToken);

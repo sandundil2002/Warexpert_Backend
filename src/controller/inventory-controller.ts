@@ -105,6 +105,7 @@ export async function trackPackage(trackingId: string): Promise<PackageModel | n
             status: inventory.status,
             warehouseName: warehouse?.name || "Unknown Warehouse",
             location: warehouse?.location || "Unknown Location",
+            customerId: String(inventory.customerId),
             customerName: customer?.name || "Unknown Customer",
             customerAddress: customer?.address || "Unknown Address",
             image: inventory.image || "",

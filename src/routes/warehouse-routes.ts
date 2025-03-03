@@ -20,7 +20,7 @@ router.get('/get', async (req, res) => {
     }
 });
 
-router.post('/post', authorizeRole("MANAGER", "SUPERVISOR"), upload.single('image'), async (req, res) => {
+router.post('/post', authorizeRole("MANAGER"), upload.single('image'), async (req, res) => {
     try {
         const { name, location, capacity, size, image } = req.body;
 
@@ -44,7 +44,7 @@ router.post('/post', authorizeRole("MANAGER", "SUPERVISOR"), upload.single('imag
 });
 
 // @ts-ignore
-router.patch('/patch/:id', authorizeRole("MANAGER", "SUPERVISOR"), upload.single('image'), async (req, res) => {
+router.patch('/patch/:id', authorizeRole("MANAGER"), upload.single('image'), async (req, res) => {
     try {
         const { id } = req.params;
         const { name, location, capacity, size, image } = req.body;
@@ -71,7 +71,7 @@ router.patch('/patch/:id', authorizeRole("MANAGER", "SUPERVISOR"), upload.single
 });
 
 // @ts-ignore
-router.delete('/delete/:id', authorizeRole("MANAGER", "SUPERVISOR"), async(req, res) => {
+router.delete('/delete/:id', authorizeRole("MANAGER"), async(req, res) => {
     const warehouseId: string = req.params.id;
 
     try {

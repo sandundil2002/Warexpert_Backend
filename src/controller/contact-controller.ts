@@ -5,7 +5,7 @@ export async function sendContactMessage(contact: ContactModel) {
     try {
         const mailOptions = {
             from: 'nold9343@gmail.com',
-            to: 'sandundil2002@gmail.com',
+            to: 'kasthuriliya89@gmail.com',
             subject: `WareXpert Contact Message from ${contact.name}`,
             html: `
     <!DOCTYPE html>

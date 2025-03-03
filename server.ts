@@ -22,7 +22,7 @@ dotenv.config();
 const app = express();
 
 app.use(cors({
-    origin: ['http://localhost:5173', 'http://localhost:8081', 'http://192.168.8.143:8081'],
+    origin: ['http://localhost:5173', 'http://localhost:8081', 'http://192.168.237.105:8081'],
     methods: ['GET', 'POST', 'PATCH', 'DELETE'],
     credentials: true,
 }));

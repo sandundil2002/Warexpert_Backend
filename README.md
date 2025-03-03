@@ -67,6 +67,10 @@ Technologies used in the project:
 *   Nodemailer for email communication
 *   Multer for file uploads
 
+<h2>API Documentation</h2>
+
+* You can view the detailed API documentation with example requests and responses <a href="https://documenter.getpostman.com/view/35384990/2sAYdioUuW">here</a>.
+
 <h2>🛡️ License:</h2>
 
 This project is licensed under the MIT License - see the LICENSE file for details.
